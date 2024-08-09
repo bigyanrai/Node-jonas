@@ -1,5 +1,7 @@
 //START SERVER
 const mongoose = require('mongoose');
+//app must be imported before configuring .env file in the process.env using dotenv package
+const app = require('./app');
 
 const dotenv = require('dotenv');
 
@@ -19,12 +21,10 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then((con) => {
-    console.log(con.connections);
+  .then(() => {
+    // console.log(con.connections);
     console.log('DB connection succesfull');
   });
-//app must be imported before configuring .env file in the process.env using dotenv package
-const app = require('./app');
 // process.env.USERNAME = process.env.USERNAME || 'bigyan';
 // console.log(process.env);
 
