@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon server.js",
-    "start:prod": "set NODE_ENV=production&& nodemon server.js"
+    "start:dev": "supervisor server.js",
+    "start:prod": "set NODE_ENV=production&& supervisor server.js"
   },
   "author": "Bigyan",
   "license": "ISC",

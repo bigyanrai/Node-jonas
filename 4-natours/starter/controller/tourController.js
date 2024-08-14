@@ -1,3 +1,4 @@
+const { json } = require('express');
 const Tour = require('./../models/tourModel');
 
 // const tours = JSON.parse(
@@ -18,7 +19,60 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    console.log(req.query);
+    //BUILD  QUERY
+    //1.filtering
+    const queryObj = { ...req.query };
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => {
+      delete queryObj[el];
+    });
+
+    //2.advance filtering
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    console.log(JSON.parse(queryStr));
+    // console.log(req.query, queryObj);
+    let query = Tour.find(JSON.parse(queryStr));
+
+    //2.sorting
+
+    if (req.query.sort) {
+      //1. first method
+      // console.log(req.query.sort);
+      // let sort = sort.replace(',', ' ');
+      // console.log(sort);
+      // query = query.sort(sort);
+
+      console.log(req.query.sort);
+      let sort = req.query.sort.replace(',', ' ');
+      console.log(sort);
+      query = query.sort(sort);
+      //sort('price ratingsAverage')
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    //3.field limting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    //4.pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
+    //execute query
+    const tours = await query;
+    // {difficuly:'easy',duration:{$gte:5}}
+
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,

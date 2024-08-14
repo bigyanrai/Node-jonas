@@ -1,9 +1,8 @@
 //START SERVER
 const mongoose = require('mongoose');
 //app must be imported before configuring .env file in the process.env using dotenv package
-const app = require('./app');
-
 const dotenv = require('dotenv');
+const app = require('./app');
 
 dotenv.config({
   path: './config.env',
@@ -17,8 +16,12 @@ const DB = process.env.DATABASE.replace(
 // const DB = process.env.DATABASE_LOCAL;
 mongoose
   .connect(DB, {
+    // useNewUrlParser: true,
+    // useCreateIndex: true,
+    // useFindAndModify: false,
     useNewUrlParser: true,
     useCreateIndex: true,
+    useUnifiedTopology: true,
     useFindAndModify: false,
   })
   .then(() => {
