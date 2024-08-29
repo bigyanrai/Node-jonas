@@ -28,10 +28,19 @@ mongoose
     // console.log(con.connections);
     console.log('DB connection succesfull');
   });
+// .catch((err) => console.log(err));
 // process.env.USERNAME = process.env.USERNAME || 'bigyan';
 // console.log(process.env);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`APP IS RUNNING AT PORT ${port}`);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log(`UNHANDLED REJECTION........SHUTTING DOWN`);
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });

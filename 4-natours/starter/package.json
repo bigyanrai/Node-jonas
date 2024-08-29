@@ -4,16 +4,21 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "supervisor server.js",
-    "start:prod": "set NODE_ENV=production&& supervisor server.js"
+    "start:prod": "set NODE_ENV=production&& supervisor server.js",
+    "debug": "ndb server.js"
   },
   "author": "Bigyan",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^5.13.22",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.6",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "config-prettier": "^0.3.0",
