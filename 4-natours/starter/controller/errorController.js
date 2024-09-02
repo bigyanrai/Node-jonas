@@ -20,7 +20,7 @@ const sendErrorProd = (err, res) => {
     //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
   } else {
     //LOG THE ERROR
-    console.log('value of ' + err.isOperational);
+    console.log(err);
     //SEND GENERIC MESSAGE
 
     res.status(500).json({
@@ -50,6 +50,12 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => {
+  return new AppError('Invalid Token. Please Login again!', 401);
+};
+
+const handleJWTExpiredError = () => new AppError('Your token has expired', 401);
+
 module.exports = (err, req, res, next) => {
   //   console.log(err.stack);
   err.statusCode = err.statusCode || 500;
@@ -73,10 +79,17 @@ module.exports = (err, req, res, next) => {
       error = handleDuplicateFields(error);
       console.log('hello');
     }
-    if (error.name == 'ValidationError') {
+    if (error.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
       console.log('BREAKPOINT 1');
     }
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError(error);
+    }
+    if (error.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError(error);
+    }
+
     sendErrorProd(error, res);
   }
 };

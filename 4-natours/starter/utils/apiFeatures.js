@@ -32,7 +32,7 @@ class APIFeatures {
       // query = query.sort(sort);
 
       let sort = this.queryString.sort.replace(',', ' ');
-      console.log(sort);
+      // console.log(sort);
       this.query = this.query.sort(sort);
       //sort('price ratingsAverage')
     } else {
