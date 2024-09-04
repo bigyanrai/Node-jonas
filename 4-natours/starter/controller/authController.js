@@ -15,6 +15,19 @@ const signToken = (id) => {
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+  }
+  user.password = undefined;
+  res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -88,13 +101,27 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   //GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
+  console.log(req.user);
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    console.log(req.user);
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403),
+      );
+    }
+    next();
+  };
+};
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   //1.GET USER BASED ON POSTED EMAIL
   // console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
+  console.log(user);
   if (!user) {
     return next(new AppError('There is no user with email address', 404));
   }
@@ -102,6 +129,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
+  // await user.save();
 
   //3.SEND IT TO THE USER'S EMAIL
   // const resetURL = `${req.protocol}://{req.get('host')/api/v1/users/resetPassword/${resetToken}}`;
