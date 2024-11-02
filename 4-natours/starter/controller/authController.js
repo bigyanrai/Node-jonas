@@ -89,7 +89,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
-      new AppError('The user belonging to the user no longer exits', 401),
+      new AppError(
+        'The user belonging to this token the user no longer exits',
+        401,
+      ),
     );
   }
   //check if user changed password after the token was issued
@@ -101,13 +104,13 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   //GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
-  console.log(req.user);
+  // console.log(req.user);
   next();
 });
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log(req.user);
+    // console.log(req.user);
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403),

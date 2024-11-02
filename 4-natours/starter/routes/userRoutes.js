@@ -8,17 +8,25 @@ const userRouter = express.Router();
 
 userRouter.post('/signup', authController.signup);
 userRouter.post('/login', authController.login);
-
 userRouter.post('/forgotPassword', authController.forgotPassword);
 userRouter.patch('/resetPassword/:token', authController.resetPassword);
-userRouter.patch(
-  '/updateMypassword',
-  authController.protect,
-  authController.updatePassword,
-);
 
-userRouter.patch('/updateMe', authController.protect, userController.updateMe);
-userRouter.delete('/deleteMe', authController.protect, userController.deleteMe);
+//This will protect all the routes that comes after this point or you can say after this middleware
+userRouter.use(authController.protect);
+
+userRouter.patch('/updateMypassword', authController.updatePassword);
+
+userRouter.get(
+  '/me',
+
+  userController.getMe,
+  userController.getUser,
+);
+userRouter.patch('/updateMe', userController.updateMe);
+userRouter.delete('/deleteMe', userController.deleteMe);
+
+userRouter.use(authController.restrictTo('admin'));
+
 userRouter.route('/').get(userController.getAllUsers);
 // .post(userController.createUser);
 userRouter
