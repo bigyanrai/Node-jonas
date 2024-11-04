@@ -6,13 +6,13 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 const { fail } = require('assert');
+const path = require('path');
 const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes.js');
 const userRouter = require('./routes/userRoutes.js');
 const reviewRouter = require('./routes/reviewRoute.js');
-const app = express();
 const rateLimit = require('express-rate-limit');
 const appError = require('./utils/appError.js');
 const globalErrorHandler = require('./controller/errorController.js');
@@ -20,6 +20,12 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+
+const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //MIDDLEWARES
 //SET SECURITY HTTP HEADERS
@@ -65,7 +71,7 @@ app.use(
 );
 
 //SEVERS STATIC FILES
-app.use(express.static(`${__dirname}/public`));
+// app.use(express.static(`${__dirname}/public`));
 
 //TEST MIDDLEWARE
 app.use((req, res, next) => {
@@ -83,6 +89,9 @@ app.use((req, res, next) => {
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('base', { tour: 'The Forest Hiker', user: 'Jonas' });
+});
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
