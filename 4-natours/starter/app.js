@@ -13,6 +13,7 @@ const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes.js');
 const userRouter = require('./routes/userRoutes.js');
 const reviewRouter = require('./routes/reviewRoute.js');
+const viewRouter = require('./routes/viewRoute.js');
 const rateLimit = require('express-rate-limit');
 const appError = require('./utils/appError.js');
 const globalErrorHandler = require('./controller/errorController.js');
@@ -89,10 +90,9 @@ app.use((req, res, next) => {
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //ROUTES
-app.get('/', (req, res) => {
-  res.status(200).render('base', { tour: 'The Forest Hiker', user: 'Jonas' });
-});
 
+//BACKEND ROUTE
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
