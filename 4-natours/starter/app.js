@@ -21,6 +21,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use(
     limit: '10kb',
   }),
 );
+app.use(cookieParser());
 
 //DATA SANITIZATION AGAINST NOSQL QUERY INJECTION
 app.use(mongoSanitize());
@@ -71,13 +73,23 @@ app.use(
   }),
 );
 
+// TO CHANGE CSP POLICY SO THAT EXTERNAL SCRIPTS CAN BE LOADED
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+  );
+  next();
+});
+
 //SEVERS STATIC FILES
 // app.use(express.static(`${__dirname}/public`));
 
 //TEST MIDDLEWARE
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // console.log(req.headers);
+  console.log(req.cookies);
   next();
 });
 

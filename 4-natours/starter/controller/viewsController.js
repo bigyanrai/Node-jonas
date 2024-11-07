@@ -15,7 +15,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTour = catchAsync(async (req, res) => {
+exports.getTour = catchAsync(async (req, res, next) => {
   //get the data ,for the requested tour (including reviews and guides)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
@@ -26,7 +26,13 @@ exports.getTour = catchAsync(async (req, res) => {
   //render template using the data from step 1
 
   res.status(200).render('tour', {
-    title: 'The Forest Hiker Tour',
+    title: `${tour.name} Tour`,
     tour,
   });
 });
+
+exports.getLoginForm = (req, res) => {
+  res.status(200).render('login', {
+    title: 'Log into your account',
+  });
+};
