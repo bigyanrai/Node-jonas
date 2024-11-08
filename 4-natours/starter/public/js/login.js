@@ -33,7 +33,8 @@ export const logout = async () => {
       url: `http://localhost:8000/api/v1/users/logout`,
     });
     if (res.data.status === 'success') {
-      location.reload(true);
+      // location.reload(true);
+      location.assign('/login');
     }
   } catch (error) {
     console.log(error.response);

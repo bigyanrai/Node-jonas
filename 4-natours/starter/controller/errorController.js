@@ -1,32 +1,63 @@
 const AppError = require('../utils/appError');
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
-  });
-};
-
-const sendErrorProd = (err, res) => {
-  //OPERATIONAL, TRUSTED ERROR:SEND MESSAGE TO CLIENT
-  if (err.isOperational) {
-    // console.log(err);
+const sendErrorDev = (err, req, res) => {
+  //API
+  if (req.originalUrl.startsWith('/api')) {
     res.status(err.statusCode).json({
       status: err.status,
+      error: err,
       message: err.message,
+      stack: err.stack,
     });
-    //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
   } else {
-    //LOG THE ERROR
     console.log(err);
-    //SEND GENERIC MESSAGE
-
-    res.status(500).json({
-      status: 'error',
-      message: 'Something went wrong',
+    //RENDERD WEBSITE
+    res.status(err.statusCode).render('error', {
+      title: 'Something went wrong',
+      msg: err.message,
     });
+  }
+};
+
+const sendErrorProd = (err, req, res) => {
+  //API
+  if (req.originalUrl.startsWith('/api')) {
+    //OPERATIONAL, TRUSTED ERROR:SEND MESSAGE TO CLIENT
+    if (err.isOperational) {
+      // console.log(err);
+      res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+      //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
+    } else {
+      //LOG THE ERROR
+      console.log(err);
+      //SEND GENERIC MESSAGE
+
+      res.status(500).json({
+        status: 'error',
+        message: 'Something went wrong',
+      });
+    }
+  } else {
+    if (err.isOperational) {
+      console.dir(err);
+      res.status(err.statusCode).render('error', {
+        title: 'Something went wrong',
+        msg: err.message,
+      });
+      //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
+    } else {
+      //LOG THE ERROR
+      console.log(err);
+      //SEND GENERIC MESSAGE
+
+      res.status(err.statusCode).render('error', {
+        title: 'Something went wrong',
+        msg: 'Please try again later',
+      });
+    }
   }
 };
 
@@ -51,7 +82,10 @@ const handleValidationErrorDB = (err) => {
 };
 
 const handleJWTError = () => {
-  return new AppError('Invalid Token. Please Login again!', 401);
+  return new AppError(
+    'You are not logged in ! Please log in to get access',
+    401,
+  );
 };
 
 const handleJWTExpiredError = () => new AppError('Your token has expired', 401);
@@ -62,10 +96,10 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    error.name = err.name;
+    error.message = err.message;
 
     console.log(error);
     // console.log('LOOK AT THIS ERROR', error);
@@ -90,6 +124,6 @@ module.exports = (err, req, res, next) => {
       error = handleJWTExpiredError(error);
     }
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
