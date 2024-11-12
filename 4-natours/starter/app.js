@@ -1,10 +1,17 @@
 // import morgan from 'morgan';
+
 process.on('uncaughtException', (err) => {
   console.log(err);
   console.log(`UNCAUGHT EXCEPTION.......SHUTTING DOWN`);
 
   process.exit(1);
 });
+
+const dotenv = require('dotenv');
+dotenv.config({
+  path: './config.env',
+});
+
 const { fail } = require('assert');
 const path = require('path');
 const express = require('express');
@@ -90,7 +97,7 @@ app.use((req, res, next) => {
 //TEST MIDDLEWARE
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
+  // console.log(req.cookies);
   next();
 });
 

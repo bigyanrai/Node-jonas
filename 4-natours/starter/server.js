@@ -1,9 +1,8 @@
 //START SERVER
 const mongoose = require('mongoose');
 //app must be imported before configuring .env file in the process.env using dotenv package
-const dotenv = require('dotenv');
 const app = require('./app');
-
+const dotenv = require('dotenv');
 dotenv.config({
   path: './config.env',
 });

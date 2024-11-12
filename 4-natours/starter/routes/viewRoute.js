@@ -1,9 +1,10 @@
 const express = require('express');
+
 const viewController = require('./../controller/viewsController');
 const authController = require('./../controller/authController');
 const router = express.Router();
-//RENDER ROUTE
 
+//RENDER ROUTE
 router.use(authController.isLoggedIn);
 
 router.get('/', authController.isLoggedIn, viewController.getOverview);
