@@ -21,6 +21,7 @@ const tourRouter = require('./routes/tourRoutes.js');
 const userRouter = require('./routes/userRoutes.js');
 const reviewRouter = require('./routes/reviewRoute.js');
 const viewRouter = require('./routes/viewRoute.js');
+const bookingRouter = require('./routes/bookingRoute.js');
 const rateLimit = require('express-rate-limit');
 const appError = require('./utils/appError.js');
 const globalErrorHandler = require('./controller/errorController.js');
@@ -90,6 +91,14 @@ app.use((req, res, next) => {
   );
   next();
 });
+// Allow scripts from Stripe
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com;",
+  );
+  next();
+});
 
 //SEVERS STATIC FILES
 // app.use(express.static(`${__dirname}/public`));
@@ -116,6 +125,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   // res.status(404).json({

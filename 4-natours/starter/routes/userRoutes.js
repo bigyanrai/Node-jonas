@@ -9,7 +9,11 @@ const userRouter = express.Router();
 userRouter.post('/signup', authController.signup);
 userRouter.post('/login', authController.login);
 userRouter.get('/logout', authController.logout);
-userRouter.post('/forgotPassword', authController.forgotPassword);
+userRouter.post(
+  '/forgotPassword',
+  authController.protect,
+  authController.forgotPassword,
+);
 userRouter.patch('/resetPassword/:token', authController.resetPassword);
 
 //This will protect all the routes that comes after this point or you can say after this middleware
