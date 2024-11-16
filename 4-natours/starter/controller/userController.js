@@ -58,8 +58,8 @@ const filterObj = (obj, ...allowedFields) => {
 
 //For logged in user
 exports.updateMe = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
+  // console.log(req.file);
+  // console.log(req.body);
   //1.CREATE ERROR IF USER POST PASSWORD DATA
   if (req.body.password || req.body.passwordConfirm)
     return next(

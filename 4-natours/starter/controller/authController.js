@@ -213,7 +213,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   //1.GET USER BASED ON POSTED EMAIL
   // console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
-  console.log(user);
+  // console.log(user);
   if (!user) {
     return next(new AppError('There is no user with email address', 404));
   }

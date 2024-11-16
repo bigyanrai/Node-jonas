@@ -10,7 +10,7 @@ const sendErrorDev = (err, req, res) => {
       stack: err.stack,
     });
   } else {
-    console.log(err);
+    // console.log(err);
     //RENDERD WEBSITE
     res.status(err.statusCode).render('error', {
       title: 'Something went wrong',
@@ -32,7 +32,7 @@ const sendErrorProd = (err, req, res) => {
       //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
     } else {
       //LOG THE ERROR
-      console.log(err);
+      // console.log(err);
       //SEND GENERIC MESSAGE
 
       res.status(500).json({
@@ -42,7 +42,7 @@ const sendErrorProd = (err, req, res) => {
     }
   } else {
     if (err.isOperational) {
-      console.dir(err);
+      // console.dir(err);
       res.status(err.statusCode).render('error', {
         title: 'Something went wrong',
         msg: err.message,
@@ -50,7 +50,7 @@ const sendErrorProd = (err, req, res) => {
       //PROGRAMMING OR OTHER UNKNOWN ERROR: DON'T LEAK ERROR DETAILS
     } else {
       //LOG THE ERROR
-      console.log(err);
+      // console.log(err);
       //SEND GENERIC MESSAGE
 
       res.status(err.statusCode).render('error', {
@@ -70,7 +70,7 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFields = (err) => {
   const value = err.keyValue.name;
-  console.log(value);
+  // console.log(value);
   const message = `Duplicate fields of ${value}.Write another name`;
   return new AppError(message, 400);
 };
@@ -101,21 +101,21 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
 
-    console.log(error);
+    // console.log(error);
     // console.log('LOOK AT THIS ERROR', error);
-    console.dir(err);
+    // console.dir(err);
     if (error.name === 'CastError') {
       error = handleCastErrorDB(error);
-      console.log(error.isOperational);
+      // console.log(error.isOperational);
     }
 
     if (error.code === 11000) {
       error = handleDuplicateFields(error);
-      console.log('hello');
+      // console.log('hello');
     }
     if (error.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
-      console.log('BREAKPOINT 1');
+      // console.log('BREAKPOINT 1');
     }
     if (error.name === 'JsonWebTokenError') {
       error = handleJWTError(error);

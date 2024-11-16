@@ -6,7 +6,7 @@ const factory = require('./handlerFactory');
 const Booking = require('./../models/bookingModel');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
-  console.log(req.params.tourID);
+  // console.log(req.params.tourID);
   // Get the currently booked tour
   const tour = await Tour.findById(req.params.tourID);
 
@@ -44,9 +44,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   //THIS IS ONLY TEMPORARY BECAUSE IT'S UNSECURE
   const { tour, user, price } = req.query;
-  console.log('----------------');
-  console.log(tour, user, price);
-  console.log('----------------');
+  // console.log('----------------');
+  // console.log(tour, user, price);
+  // console.log('----------------');
 
   if (!tour || !user || !price) return next();
 
@@ -54,3 +54,9 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 
   res.redirect(req.originalUrl.split('?')[0]);
 });
+
+exports.createBooking = factory.createOne(Booking);
+exports.getBooking = factory.getOne(Booking);
+exports.getAllBookings = factory.getAll(Booking);
+exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);

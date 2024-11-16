@@ -1,8 +1,8 @@
 // import morgan from 'morgan';
 
 process.on('uncaughtException', (err) => {
-  console.log(err);
-  console.log(`UNCAUGHT EXCEPTION.......SHUTTING DOWN`);
+  // console.log(err);
+  // console.log(`UNCAUGHT EXCEPTION.......SHUTTING DOWN`);
 
   process.exit(1);
 });
@@ -30,6 +30,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //MIDDLEWARES
 //SET SECURITY HTTP HEADERS
 app.use(helmet());
-console.log(process.env.NODE_ENV);
+// console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 //LIMITS REQUEST FOR SAME API
@@ -102,6 +103,8 @@ app.use((req, res, next) => {
 
 //SEVERS STATIC FILES
 // app.use(express.static(`${__dirname}/public`));
+
+app.user(compression());
 
 //TEST MIDDLEWARE
 app.use((req, res, next) => {

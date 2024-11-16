@@ -5,7 +5,7 @@ export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'post',
-      url: 'http://localhost:8000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: {
         email,
         password,
@@ -18,7 +18,7 @@ export const login = async (email, password) => {
         location.assign('/');
       }, 1000);
     }
-    console.log(res);
+    // console.log(res);
   } catch (error) {
     showAlert('error', error.response.data.message);
     console.log('bundle check');
@@ -30,14 +30,14 @@ export const logout = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `http://localhost:8000/api/v1/users/logout`,
+      url: `/api/v1/users/logout`,
     });
     if (res.data.status === 'success') {
       // location.reload(true);
       location.assign('/login');
     }
   } catch (error) {
-    console.log(error.response);
+    // console.log(error.response);
     showAlert('error', 'Error logging out');
   }
 };
