@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "supervisor server.js",
+    "start": "node server.js",
+    "dev": "supervisor server.js",
     "start:prod": "set NODE_ENV=production&& supervisor server.js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
@@ -49,5 +50,8 @@
     "eslint-plugin-react": "^7.35.0",
     "parcel-bundler": "^1.12.5",
     "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
